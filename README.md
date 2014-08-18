@@ -138,6 +138,8 @@ scrap.scrap_list
 
 ### 3. 带详细页面信息提取
 
+**如果DetailObj不是单独运行而是在ListObj中运行，抓取的信息将合并到ListObj的结果中去**
+
 ```ruby
 
 #create ListObj
@@ -166,6 +168,7 @@ scrap_detail.data_proc << lambda {|url,i|
 }
 
 #optional result process
+#此处可选，抓取的信息将合并到列表页面抓取的记录中去，也可以单独入库了。
 scrap_detail.result_proc << lambda {|url,items|
 }
 
