@@ -141,6 +141,10 @@ scrap.scrap_list
 ```ruby
 
 #create ListObj
+
+#extra detail page url
+scrap.attr_detail_url = [".list a",:href]
+
 ...
 
 ################# has detail page ################
