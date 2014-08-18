@@ -77,8 +77,6 @@ scrap.result_proc << lambda {|url,items|
 ########### has many pages ###########
 #如果设置了可以根据不同的分页方式抓取多页列表
 
-=begin
-
 scrap.has_many_pages = true
 
 #next page link
@@ -110,12 +108,10 @@ scrap.get_next_url = lambda { |url,next_page_number|
 #**total_record in progress
 scrap.page_method = :total_records
 
-=end
 
 ################# has detail page ################
 #如果设置了可以根据之前抓取的详细页面URL获取详细页面信息
 
-=begin
 #1. define a detail object
 scrap_detail = TheScrap::DetailObj.new
 scrap_detail.attr_title = ".Tbox h3"
@@ -139,8 +135,6 @@ scrap_detail.result_proc << lambda {|url,items|
 scrap.detail_info << [scrap_detail,'detail_url']
 
 #scrap.detail_info << [scrap_detail_1,'detail_url_1']
-
-=end
 
 #scrap
 scrap.scrap_list
@@ -173,9 +167,73 @@ TODO
 TODO
 
 
-### 7. 结果处理
+### 7. 结果处理 (Result Process)
 
-TODO
+#### mysql
+```ruby
+require 'active_record'
+require 'mysql2'
+require 'activerecord-import' #recommend
+
+ActiveRecord::Base.establish_connection( :adapter => "mysql2",  :host => "localhost",
+ :database => "weixin", :username => "root", :password => "8admin9*"  )
+
+ActiveRecord::Base.record_timestamps = false
+class Article < ActiveRecord::Base
+  validates :ori_id, :uniqueness => true
+end
+
+scrap.result_proc << lambda {|url,items|
+  articles = []
+  items.each do |item| 
+		#item[:user_id] = 1
+		articles << Article.new(item)
+	end
+  Article.import articles
+}
+```
+#### mongodb
+
+```ruby
+require 'mongoid'
+
+Mongoid.load!("./mongoid.yml", :production)
+Mongoid.allow_dynamic_fields = true
+
+class Article
+  include Mongoid::Document
+	#....
+end
+
+scrap.result_proc << lambda {|url,items|
+  items.each do |item| 
+		#item[:user_id] = 1
+		Article.create(item)
+	end
+}
+```
+
+### json,xml...
+
+```ruby
+#json
+scrap.result_proc << lambda {|url,items|
+	File.open("xxx.xml",'w').write(items.to_json)
+}
+
+#xml
+scrap.result_proc << lambda {|url,items|
+	articles = []
+  items.each do |item| 
+		articles << item.to_xml
+	end
+	file  = File.open("xxx.xml",'w')
+	file.write('<articles>')
+	file.write(articles.join(''))
+	file.write('</articles>')
+	file.close
+}
+```
 
 ## TODO
 
