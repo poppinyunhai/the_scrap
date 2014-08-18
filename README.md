@@ -200,7 +200,7 @@ scrap.attr_name = [css_selector,attrs]
 
 第二个元素可选值为：
 
-**frag_attr**
+**:frag_attr**
 
 直接去Fragmengt的属性，如list的属性,因为在实际使用过程中遇到过需要取列表或表格行的某个属性的情况。
 
@@ -208,11 +208,11 @@ scrap.attr_name = [:frag_attr,'href']
 
 数组第一个元素为frag_attr而非css selector因为css selector 已经在 scrap.item_frag 中指定，此为特例仅此一处出现此用法。
 
-**inner_html**
+**:inner_html**
 
 取节点内的html
 
-**join**
+**:join**
 
 遇到某个list时，需要把里面的元素全部获取并使用逗号分隔。如：tags
 
@@ -232,7 +232,7 @@ scrap.attr_name = ['.tags', :join]
 
 	“ruby,rails,activerecord"
 
-**array**
+**:array**
 
 遇到某个list时，需要把里面的元素全部获取并返回一个Array
 
@@ -252,17 +252,38 @@ scrap.attr_name = ['.tags', :array]
 
 	['ruby','rails','activerecord']
 
-**src**
+**:src**
 
 取得图片的SRC属性，并且使用URI.join(current_page_url,src_value)
 
-**href**
+**:href**
 
 取得链接的href属性，并且使用URI.join(current_page_url,href_value)
 
 **"else"**
 
 直接获取元素属性的，不做任何其他处理。
+
+
+**实例**
+
+```ruby
+@book_info = TheScrap::DetailObj.new
+@book_info.attr_name = "#divBookInfo .title h1"
+@book_info.attr_author = "#divBookInfo .title a"
+@book_info.attr_desc = [".intro .txt",:inner_html]
+@book_info.attr_pic_url = ['.pic_box a img',:src]
+@book_info.attr_chapters_url = ['.book_pic .opt li[1] a',:href]
+@book_info.attr_book_info = ".info_box table tr"
+@book_info.attr_cat_1 = '.box_title .page_site a[2]'
+@book_info.attr_tags = ['.book_info .other .labels .box[1] a',:array]
+@book_info.attr_user_tags = ['.book_info .other .labels .box[2] a',:join]
+@book_info.attr_rate = '#bzhjshu'
+@book_info.attr_rate_cnt = ["#div_pingjiarenshu",'title']
+@book_info.attr_last_updated_at ="#divBookInfo .tabs .right"
+@book_info.attr_last_chapter = '.updata_cont .title a' 
+@book_info.attr_last_chapter_desc = ['.updata_cont .cont a',:inner_html]
+```
 
 ### 5. 分页模式
 
