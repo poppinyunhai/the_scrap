@@ -37,12 +37,15 @@ scrap = TheScrap::ListObj.new
 scrap.url = "http://fz.ganji.com/shouji/"
 
 #fragment css selector
+#表示，表格的每一行，或者列表的每个元素
+#这个行或者元素里面应该包含这条记录的详细信息
+#详细信息通过attr列表来获取。
 scrap.item_frag = ".layoutlist .list-bigpic"
 
 #scrap attr list
 scrap.attr_name = ['.ft-tit',:inner_html]
-scrap.attr_detail_url = ['.ft-tit','href']
-scrap.attr_img = ['dt a img','src']
+scrap.attr_detail_url = ['.ft-tit',:href]
+scrap.attr_img = ['dt a img',:src]
 scrap.attr_desc = '.feature p'
 scrap.attr_price = '.fc-org'
 
@@ -73,6 +76,27 @@ scrap.result_proc << lambda {|url,items|
     pp item
   end
 }
+
+##### 此处可以添加 多页分页 抓取功能 参见 2
+
+##### 此处可以添加 详细信息页面 抓取功能 参见 3
+
+#scrap
+scrap.scrap_list
+
+```
+
+### 1. 列表抓取
+
+参考上一节
+
+### 2. 多页列表抓取
+
+```ruby
+
+#create ListObj
+
+#...
 
 ########### has many pages ###########
 #如果设置了可以根据不同的分页方式抓取多页列表
@@ -107,7 +131,18 @@ scrap.get_next_url = lambda { |url,next_page_number|
 
 #**total_record in progress
 scrap.page_method = :total_records
+#...
 
+scrap.scrap_list
+
+```
+
+### 3. 带详细页面信息提取
+
+```ruby
+
+#create ListObj
+...
 
 ################# has detail page ################
 #如果设置了可以根据之前抓取的详细页面URL获取详细页面信息
@@ -136,38 +171,113 @@ scrap.detail_info << [scrap_detail,'detail_url']
 
 #scrap.detail_info << [scrap_detail_1,'detail_url_1']
 
-#scrap
+#...
+
 scrap.scrap_list
 
 ```
 
-### 1. 列表抓取
-
-TODO
-
-### 2. 多页列表抓取
-
-TODO
-
-### 3. 带详细页面信息提取
-
-TODO
 
 ### 4. 元素属性说明
 
-TODO
+元素属性使用 scrap.attr_#{元素名称} = 规则 来表示
+
+抓取后将全部放到一个Hash中，其中“元素名称”为Hash的Key，获取的数据为Hash的值
+如：scrap.attr_name = ".title" 则结果item['name'] = ".title 对应的节点内容"
+
+其中规则可以使用多种方式表示
+#### 4.1 直接使用CSS Selector
+	
+直接使用CSS Selector的情况下，则取得CSS节点对应的 文本内容（inner_text)
+
+#### 4.2 一个数组
+
+scrap.attr_name = [css_selector,attrs]
+
+其中数值的第一个元素为： css_selector
+
+第二个元素可选值为：
+
+1. frag_attr
+
+直接去Fragmengt的属性，如list的属性,因为在实际使用过程中遇到过需要取列表或表格行的某个属性的情况。
+
+scrap.attr_name = [:frag_attr,'href']
+
+数组第一个元素为frag_attr而非css selector因为css selector 已经在 scrap.item_frag 中指定，此为特例仅此一处出现此用法。
+
+2. inner_html 
+
+取节点内的html
+
+3. join
+
+遇到某个list时，需要把里面的元素全部获取并使用逗号分隔。如：tags
+
+```html
+<ul class=".tags">
+<li>ruby</li>
+<li>rails</li>
+<li>activerecord</li>
+</ul>
+```
+
+```ruby
+scrap.attr_name = ['.tags', :join]
+```
+
+使用上述取得一个字符串: “ruby,rails,activerecord"
+
+4. array
+
+遇到某个list时，需要把里面的元素全部获取并返回一个Array
+
+```html
+<ul class=".tags">
+<li>ruby</li>
+<li>rails</li>
+<li>activerecord</li>
+</ul>
+```
+
+```ruby
+scrap.attr_name = ['.tags', :array]
+```
+
+使用上述取得一个字符串: ['ruby','rails','activerecord']
+
+5. src
+
+取得图片的SRC属性，并且使用URI.join(current_page_url,src_value)
+
+6. href
+
+取得链接的href属性，并且使用URI.join(current_page_url,href_value)
+
+7. "else"
+
+直接获取元素属性的，不做任何其他处理。
+
+
+``ruby`
+scrap.attr_name = ['.ft-tit',:inner_html]
+scrap.attr_detail_url = ['.ft-tit',:href]
+scrap.attr_img = ['dt a img',:src]
+scrap.attr_desc = '.feature p'
+scrap.attr_price = '.fc-org'
+``
 
 
 ### 5. 分页模式
 
-TODO
+参考 2. 多页列表抓取
 
 ### 6. 处理方法
 
 TODO
 
 
-### 7. 结果处理 (Result Process)
+### 7. 结果处理
 
 #### mysql
 ```ruby
@@ -175,13 +285,16 @@ require 'active_record'
 require 'mysql2'
 require 'activerecord-import' #recommend
 
+
 ActiveRecord::Base.establish_connection( :adapter => "mysql2",  :host => "localhost",
- :database => "weixin", :username => "root", :password => "8admin9*"  )
+ :database => "test", :username => "test", :password => ""  )
 
 ActiveRecord::Base.record_timestamps = false
 class Article < ActiveRecord::Base
   validates :ori_id, :uniqueness => true
 end
+
+# OR load Rails env!
 
 scrap.result_proc << lambda {|url,items|
   articles = []
@@ -204,6 +317,8 @@ class Article
   include Mongoid::Document
 	#....
 end
+
+# OR load Rails env!
 
 scrap.result_proc << lambda {|url,items|
   items.each do |item| 

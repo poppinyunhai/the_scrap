@@ -66,7 +66,7 @@ module TheScrap
           item_info[k] = doc.css(@attrs[k]).text.strip
         else
           option = @attrs[k]
-          if option[0] == :item_attr
+          if option[0] == :frag_attr
             item_info[k] = doc[option[1]]
             next
           end
