@@ -179,17 +179,25 @@ scrap.scrap_list
 
 ### 4. 元素属性说明
 
-元素属性使用 scrap.attr_#{元素名称} = 规则 来表示
+元素属性使用 **scrap.attr_#{元素名称} = 规则** 来表示
 
-抓取后将全部放到一个Hash中，其中“元素名称”为Hash的Key，获取的数据为Hash的值
+**抓取后将全部放到一个Hash中，其中“元素名称”为Hash的Key，获取的数据为Hash的值**
 
-如：scrap.attr_name = ".title" 则结果item['name'] = ".title 对应的节点内容"
+如
+
+	scrap.attr_name = ".title"
+
+则结果item['name'] = ".title 对应的节点内容"
 
 其中规则可以使用多种方式表示
 
 #### 4.1 直接使用CSS Selector
 	
 直接使用CSS Selector的情况下，则取得CSS节点对应的 文本内容（inner_text)
+
+```ruby
+@book_info.attr_author = "#divBookInfo .title a"
+```
 
 #### 4.2 一个数组
 
@@ -216,7 +224,7 @@ scrap.attr_name = [:frag_attr,'href']
 遇到某个list时，需要把里面的元素全部获取并使用逗号分隔。如：tags
 
 ```html
-<ul class=".tags">
+<ul class="tags">
 <li>ruby</li>
 <li>rails</li>
 <li>activerecord</li>
@@ -238,7 +246,7 @@ scrap.attr_name = ['.tags', :join]
 遇到某个list时，需要把里面的元素全部获取并返回一个Array
 
 ```html
-<ul class=".tags">
+<ul class="tags">
 <li>ruby</li>
 <li>rails</li>
 <li>activerecord</li>
@@ -386,7 +394,7 @@ scrap.result_proc << lambda {|url,items|
 ```ruby
 #json
 scrap.result_proc << lambda {|url,items|
-	File.open("xxx.xml",'w').write(items.to_json)
+	File.open("xxx.json",'w').write(items.to_json)
 }
 
 #xml
