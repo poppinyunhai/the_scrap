@@ -13,7 +13,7 @@ module TheScrap
         html = dp.call(html)
       end
 
-      doc = Nokogiri::HTML(html)
+      doc = Nokogiri::HTML(html,nil,encoding)
       get_attrs(url,doc,item_info)
 
       #has detail page?

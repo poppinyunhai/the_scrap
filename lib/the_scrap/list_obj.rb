@@ -21,7 +21,7 @@ module TheScrap
         html = dp.call(html)
       end
 
-      doc = Nokogiri::HTML( html )
+      doc = Nokogiri::HTML(html,nil,encoding)
       doc.css(item_frag).each do |item|
 
         item_info = {}

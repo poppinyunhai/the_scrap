@@ -15,6 +15,8 @@ module TheScrap
     attr_accessor :result_proc #入库，文件生成等。
     attr_accessor :detail_info #详细页面对象
 
+    attr_accessor :encoding
+
     attr_accessor :debug
     alias_method :debug?, :debug
 
@@ -25,6 +27,7 @@ module TheScrap
       @attrs = {}
       @more_info = []
       @debug = false
+      #@encoding = 'utf-8'
       @result_proc = []
       @detail_info = []
       @data_proc = []
