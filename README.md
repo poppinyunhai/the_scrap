@@ -1,9 +1,8 @@
 ## The Scrap
 
-The Scrap 是一个基于Nokogiri的网页数据抓取的框架，目标是使用简单、高效、高自定义、高适配性。
+The Scrap 是一个基于Nokogiri的网页数据抓取的框架
 
-代码从个人项目ODSHUB提取出来，集合近10年来无聊时抓取数据的经验（请自动忽略本句吹牛语），
-
+目标是使用简单、高效、高自定义、高适配性。
 
 ## Installation
 
@@ -230,7 +229,9 @@ scrap.attr_name = ['.tags', :join]
 
 使用上述取得一个字符串:
 
-	“ruby,rails,activerecord"
+```ruby
+"ruby,rails,activerecord"
+```
 
 **:array**
 
@@ -248,9 +249,11 @@ scrap.attr_name = ['.tags', :join]
 scrap.attr_name = ['.tags', :array]
 ```
 
-使用上述取得一个字符串:
+使用上述取得一个字数组:
 
-	['ruby','rails','activerecord']
+```ruby
+['ruby','rails','activerecord']
+```
 
 **:src**
 
