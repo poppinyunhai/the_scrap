@@ -1,17 +1,15 @@
-# The Scrap
+## The Scrap
 
 The Scrap 是一个基于Nokogiri的网页数据抓取的框架，目标是使用简单、高效、高自定义、高适配性。
 
 代码从个人项目ODSHUB提取出来，集合近10年来无聊时抓取数据的经验（请自动忽略本句吹牛语），
-
-满足目前本人网页抓取过程中90%以上的使用场景和需求（这句倒是真的）
 
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'thescrap'
+    gem 'thes_crap'
 
 And then execute:
 
@@ -19,7 +17,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install thescrap
+    $ gem install the_scrap
 
 ## Usage
 ### 0. 全景
@@ -52,3 +50,4 @@ Or install it yourself as:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
